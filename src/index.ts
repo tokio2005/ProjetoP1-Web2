@@ -1,13 +1,22 @@
 
-import express from "express";
+    import express from "express";
 
-const app = express();
+    import dotenv from "dotenv";
+    dotenv.config()
+import { AppDataSource } from "./data-source";
 
- //Incluir os controller
- import login from"./controllers/login";
+    const app = express();
 
- app.use('/', login)
+    app.use(express.json());
 
-app.listen(8080, ()=>{
-    console.log("Servidor iniciado na porta 8080: http://localhost:8080")
-});
+    //Incluir os controller
+    import AuthController from"./controllers/AuthController";
+    import SituationsController from"./controllers/SituationsController";
+
+    app.use('/', AuthController)
+    app.use('/', SituationsController)
+
+
+    app.listen(process.env.PORT, ()=>{
+        console.log(`Servidor iniciado na porta $ {process.env.PORT}: http://localhost:${process.env.PORT}`)
+    });
