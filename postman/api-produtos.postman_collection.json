@@ -1,0 +1,67 @@
+{
+  "info": {
+    "name": "CRUD Aula NODEJS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "host", "value": "http://localhost:8080" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        { "name": "WELCOME", "request": { "method": "GET", "header": [], "url": { "raw": "{{host}}/", "host": ["{{host}}"], "path": [""] } } }
+      ]
+    },
+    {
+      "name": "Situations",
+      "item": [
+        { "name": "CREATE", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"nameSituation\": \"Teste\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{host}}/situations", "host": ["{{host}}"], "path": ["situations"] } } },
+        { "name": "VIEW", "request": { "method": "GET", "header": [], "url": { "raw": "{{host}}/situations/1", "host": ["{{host}}"], "path": ["situations", "1"] } } },
+        { "name": "EDIT", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"nameSituation\": \"Ativo\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{host}}/situations/1", "host": ["{{host}}"], "path": ["situations", "1"] } } },
+        { "name": "LIST", "request": { "method": "GET", "header": [], "url": { "raw": "{{host}}/situations?page=1&limit=5", "host": ["{{host}}"], "path": ["situations"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "5" }] } } },
+        { "name": "DELETE", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{host}}/situations/4", "host": ["{{host}}"], "path": ["situations", "4"] } } }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        { "name": "CREATE", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Notebook\",\n  \"productSituationId\": 1,\n  \"productCategoryId\": 1\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{host}}/products", "host": ["{{host}}"], "path": ["products"] } } },
+        { "name": "VIEW", "request": { "method": "GET", "header": [], "url": { "raw": "{{host}}/products/1", "host": ["{{host}}"], "path": ["products", "1"] } } },
+        { "name": "EDIT", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Notebook Gamer\",\n  \"productSituationId\": 2,\n  \"productCategoryId\": 1\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{host}}/products/1", "host": ["{{host}}"], "path": ["products", "1"] } } },
+        { "name": "LIST", "request": { "method": "GET", "header": [], "url": { "raw": "{{host}}/products?page=1&limit=5", "host": ["{{host}}"], "path": ["products"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "5" }] } } },
+        { "name": "LIST página 2", "request": { "method": "GET", "header": [], "url": { "raw": "{{host}}/products?page=2&limit=5", "host": ["{{host}}"], "path": ["products"], "query": [{ "key": "page", "value": "2" }, { "key": "limit", "value": "5" }] } } },
+        { "name": "DELETE", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{host}}/products/26", "host": ["{{host}}"], "path": ["products", "26"] } } },
+        { "name": "ERRO CREATE sem name (400)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"productSituationId\": 1,\n  \"productCategoryId\": 1\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{host}}/products", "host": ["{{host}}"], "path": ["products"] } } },
+        { "name": "ERRO CREATE categoria inexistente (400)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Teste\",\n  \"productSituationId\": 1,\n  \"productCategoryId\": 9999\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{host}}/products", "host": ["{{host}}"], "path": ["products"] } } },
+        { "name": "ERRO VIEW inexistente (404)", "request": { "method": "GET", "header": [], "url": { "raw": "{{host}}/products/9999", "host": ["{{host}}"], "path": ["products", "9999"] } } }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        { "name": "CREATE", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Informática\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{host}}/categories", "host": ["{{host}}"], "path": ["categories"] } } },
+        { "name": "VIEW", "request": { "method": "GET", "header": [], "url": { "raw": "{{host}}/categories/1", "host": ["{{host}}"], "path": ["categories", "1"] } } },
+        { "name": "EDIT", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Eletrônicos e Informática\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{host}}/categories/1", "host": ["{{host}}"], "path": ["categories", "1"] } } },
+        { "name": "LIST", "request": { "method": "GET", "header": [], "url": { "raw": "{{host}}/categories?page=1&limit=5", "host": ["{{host}}"], "path": ["categories"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "5" }] } } },
+        { "name": "DELETE", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{host}}/categories/5", "host": ["{{host}}"], "path": ["categories", "5"] } } },
+        { "name": "ERRO CREATE sem name (400)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{host}}/categories", "host": ["{{host}}"], "path": ["categories"] } } },
+        { "name": "ERRO VIEW inexistente (404)", "request": { "method": "GET", "header": [], "url": { "raw": "{{host}}/categories/9999", "host": ["{{host}}"], "path": ["categories", "9999"] } } },
+        { "name": "ERRO DELETE com produtos (409)", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{host}}/categories/1", "host": ["{{host}}"], "path": ["categories", "1"] } } }
+      ]
+    },
+    {
+      "name": "Product Situations",
+      "item": [
+        { "name": "CREATE", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Em promoção\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{host}}/product-situations", "host": ["{{host}}"], "path": ["product-situations"] } } },
+        { "name": "VIEW", "request": { "method": "GET", "header": [], "url": { "raw": "{{host}}/product-situations/1", "host": ["{{host}}"], "path": ["product-situations", "1"] } } },
+        { "name": "EDIT", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Ativo (editado)\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{host}}/product-situations/1", "host": ["{{host}}"], "path": ["product-situations", "1"] } } },
+        { "name": "LIST", "request": { "method": "GET", "header": [], "url": { "raw": "{{host}}/product-situations?page=1&limit=5", "host": ["{{host}}"], "path": ["product-situations"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "5" }] } } },
+        { "name": "DELETE", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{host}}/product-situations/5", "host": ["{{host}}"], "path": ["product-situations", "5"] } } },
+        { "name": "ERRO CREATE sem name (400)", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{host}}/product-situations", "host": ["{{host}}"], "path": ["product-situations"] } } },
+        { "name": "ERRO VIEW inexistente (404)", "request": { "method": "GET", "header": [], "url": { "raw": "{{host}}/product-situations/9999", "host": ["{{host}}"], "path": ["product-situations", "9999"] } } },
+        { "name": "ERRO DELETE com produtos (409)", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{host}}/product-situations/1", "host": ["{{host}}"], "path": ["product-situations", "1"] } } }
+      ]
+    }
+  ]
+}
