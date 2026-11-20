@@ -10,6 +10,15 @@ export class Product {
     @Column({ length: 255 })
     name!: string;
 
+    @Column({ length: 255, unique: true })
+    slug!: string;
+
+    @Column({ type: "longtext", nullable: true })
+    description!: string | null;
+
+    @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+    price!: number;
+
     @Column()
     productSituationId!: number;
 

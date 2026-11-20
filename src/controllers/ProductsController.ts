@@ -4,6 +4,7 @@ import { Product } from "../entity/products";
 import { Category } from "../entity/categories";
 import { ProductSituation } from "../entity/productSituations";
 import { PaginationService } from "../services/PaginationService";
+import { SlugService } from "../services/SlugService";
 
 const Router = express.Router();
 
@@ -49,9 +50,15 @@ Router.get("/products/:id", async (req: Request, res: Response) => {
 // Valida o corpo e a existência das chaves estrangeiras.
 // Retorna a mensagem de erro, ou null se estiver tudo certo.
 async function validate(body: any): Promise<string | null> {
-    const { name, productSituationId, productCategoryId } = body;
+    const { name, description, price, productSituationId, productCategoryId } = body;
 
     if (!name || typeof name !== "string" || !name.trim()) return "O campo name é obrigatório.";
+    if (description !== undefined && description !== null && typeof description !== "string") {
+        return "O campo description deve ser um texto.";
+    }
+    if (price === undefined || price === null || price === "" || isNaN(Number(price)) || Number(price) < 0) {
+        return "O campo price é obrigatório e deve ser um número maior ou igual a zero.";
+    }
     if (!Number.isInteger(productSituationId)) return "productSituationId deve ser um número inteiro.";
     if (!Number.isInteger(productCategoryId)) return "productCategoryId deve ser um número inteiro.";
 
@@ -65,6 +72,7 @@ async function validate(body: any): Promise<string | null> {
 }
 
 // Cadastrar: POST /products
+// O slug é opcional: se não vier no corpo, é gerado a partir do name.
 Router.post("/products", async (req: Request, res: Response) => {
     try {
         const error = await validate(req.body);
@@ -73,10 +81,23 @@ Router.post("/products", async (req: Request, res: Response) => {
             return;
         }
 
-        const { name, productSituationId, productCategoryId } = req.body;
+        const { name, slug, description, price, productSituationId, productCategoryId } = req.body;
         const repository = AppDataSource.getRepository(Product);
+
+        const finalSlug = await SlugService.generateUnique(
+            repository,
+            typeof slug === "string" && slug.trim() ? slug : name
+        );
+
         const product = await repository.save(
-            repository.create({ name: name.trim(), productSituationId, productCategoryId })
+            repository.create({
+                name: name.trim(),
+                slug: finalSlug,
+                description: description ?? null,
+                price: Number(price),
+                productSituationId,
+                productCategoryId,
+            })
         );
 
         res.status(201).json({ message: "Produto cadastrado com sucesso!", product });
@@ -104,8 +125,22 @@ Router.put("/products/:id", async (req: Request, res: Response) => {
             return;
         }
 
-        const { name, productSituationId, productCategoryId } = req.body;
-        repository.merge(product, { name: name.trim(), productSituationId, productCategoryId });
+        const { name, slug, description, price, productSituationId, productCategoryId } = req.body;
+
+        const finalSlug = await SlugService.generateUnique(
+            repository,
+            typeof slug === "string" && slug.trim() ? slug : name,
+            product.id
+        );
+
+        repository.merge(product, {
+            name: name.trim(),
+            slug: finalSlug,
+            description: description ?? null,
+            price: Number(price),
+            productSituationId,
+            productCategoryId,
+        });
         await repository.save(product);
 
         res.status(200).json({ message: "Produto atualizado com sucesso!", product });

@@ -1,6 +1,7 @@
 import { DataSource } from "typeorm";
 import { User } from "../entity/users";
 import { Situation } from "../entity/situations";
+import bcrypt from "bcryptjs";
 
 export default class CreateUsersSeeds {
     public async run(dataSource: DataSource): Promise<void> {
@@ -23,8 +24,8 @@ export default class CreateUsersSeeds {
         }
 
         await userRepository.save([
-            { id: 1, name: "Adriano Baião", email: "baiao@baiao.com.br", situation },
-            { id: 2, name: "Aurora", email: "aurora@baiao.com.br", situation },
+            { id: 1, name: "Adriano Baião", email: "baiao@baiao.com.br",password: await bcrypt.hash ("123456", 10), situation },
+            { id: 2, name: "Aurora", email: "aurora@baiao.com.br",password: await bcrypt.hash ("123456", 10), situation },
         ]);
 
         console.log("Seed concluído com sucesso: usuários cadastrados!");

@@ -5,10 +5,12 @@ import { User} from "../entity/users";
 import { PaginationService } from "../services/PaginationService";
 import * as yup from 'yup';
 import { Not } from "typeorm";
+import bcrypt from "bcryptjs";
+import {verifyToken} from "../middlewares/authMiddleware";
 
 const Router = express.Router();
 
-Router.get("/users",async(req:Request, res:Response)=>{
+Router.get("/users", verifyToken,async(req:Request, res:Response)=>{
       try{
       const situationRepository = AppDataSource.getRepository(User);
 
@@ -32,7 +34,7 @@ Router.get("/users",async(req:Request, res:Response)=>{
 
 });
 
-Router.get("/users/:id", async(req:Request, res:Response)=>{
+Router.get("/users/:id", verifyToken,async(req:Request, res:Response)=>{
       try{
       const { id } = req.params;
 
@@ -60,7 +62,7 @@ Router.get("/users/:id", async(req:Request, res:Response)=>{
 
 });
 
-Router.post("/users",async(req:Request, res:Response)=>{
+Router.post("/users",verifyToken,async(req:Request, res:Response)=>{
      try{
        var data = req.body;
 
@@ -86,6 +88,7 @@ Router.post("/users",async(req:Request, res:Response)=>{
           return;
          
        }
+       data.password = await bcrypt.hash(data.password, 10)
 
        const newUser = userRepository.create(data);
 
@@ -112,6 +115,61 @@ Router.post("/users",async(req:Request, res:Response)=>{
 
 
      }
+});
+
+
+//Criptografia
+Router.put("/users-password/:id", verifyToken,async(req:Request, res:Response)=>{
+      try{
+      const { id } = req.params;
+
+      var data = req.body;
+      const schema = yup.object().shape({
+         password: yup.string().required("O campo senha é obrigatório!").min(6,"A senha deve ter no minimo 6 caracteres")
+       })
+
+       await schema.validate(data, {abortEarly: false});
+
+
+      const userRepository = AppDataSource.getRepository(User);
+
+      const user = await userRepository.findOneBy({id : parseInt(id)})
+
+      if(!user){
+          res.status(404).json({
+          mensagem : "Usuário não encontrado",
+       });
+       return 
+      }
+       
+      data.password = await bcrypt.hash(data.password, 10)
+
+   
+      userRepository.merge(user, data);
+      //Salvr dados
+      const updateUser = await userRepository.save(user);
+
+      res.status(200).json({
+          mensagem : "senha do usuário atualizada com sucesso",
+          situation: updateUser
+      })
+  
+
+      }catch(error){
+          if(error instanceof yup.ValidationError){
+          res.status(400).json({
+          mensagem : error.errors
+          });
+          return;
+
+        }
+
+          res.status(500).json({
+          mensagem : "Erro ao editar senha do usuário",
+       });
+       return
+      }
+
 });
 
 Router.put("/users/:id", async(req:Request, res:Response)=>{
