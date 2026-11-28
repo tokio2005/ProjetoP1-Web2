@@ -6,6 +6,7 @@ import * as yup from "yup";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
+import {verifyToken} from "../middlewares/authMiddleware";
 
 const Router = express.Router();
 
@@ -40,6 +41,68 @@ Router.post("/", async (req: Request, res: Response) => {
     }
 });
 
+
+    Router.get("/validate-token", verifyToken,async (req: Request, res: Response) => {
+        res.status(200).json({
+                message: "Token Válido!",
+                userId: (req as any).user.id,
+            });
+            return;
+
+    });
+    Router.post("/new-users",async(req:Request, res:Response)=>{
+         try{
+           var data = req.body;
+    
+           const schema = yup.object().shape({
+             name: yup.string().required("O campo nome é obrigatório!").min(3, "O campo nome deve ter no minimo 3 caracteres!"),
+             email: yup.string().email("Email inválido!").required("O campo email é obrigatório"),
+             situation: yup.number().required("O campo situação é obrigatório!")
+    
+           });
+    
+           await schema.validate(data, {abortEarly: false});
+    
+           const userRepository = AppDataSource.getRepository(User);
+    
+           const existingUser = await userRepository.findOne({
+              where : {email: data.email}
+           })
+    
+           if(existingUser){
+             res.status(400).json({
+              mensagem : "Já existe um usuário cadastrado com este email!"
+              });
+              return;
+             
+           }
+           
+           const newUser = userRepository.create(data);
+    
+           await userRepository.save(newUser);
+           res.status(201).json({
+              mensagem : "Usuário cadastrado com sucesso",
+              situation: newUser
+    
+           });
+    
+    
+         }catch(error){
+           if(error instanceof yup.ValidationError){
+              res.status(400).json({
+              mensagem : error.errors
+              });
+              return;
+        }
+    
+              console.log(error); 
+              res.status(500).json({
+              mensagem : "Erro ao cadastrar usuário",
+           });
+    
+    
+         }
+    });
 // ---------------------------------------------------------------
 // SOLICITAR RECUPERAÇÃO DE SENHA
 // Body: { "urlRecoverPassword": "http://localhost:3000/recuperar-senha", "email": "..." }

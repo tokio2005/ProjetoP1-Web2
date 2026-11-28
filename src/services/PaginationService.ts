@@ -9,6 +9,7 @@ export interface PaginationResult<T> {
         lastPage: number;
         prevPage: number | null;
         nextPage: number | null;
+        relations?: FindOptionsRelations<T>,
     };
 }
 
@@ -19,6 +20,7 @@ export class PaginationService {
         limit: number = 10,
         order: FindOptionsOrder<T> = {},
         relations?: FindOptionsRelations<T>
+        
     ): Promise<PaginationResult<T>> {
         page = Math.max(page, 1);
         limit = Math.min(Math.max(limit, 1), 100);

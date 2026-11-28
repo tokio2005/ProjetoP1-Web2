@@ -18,7 +18,7 @@ Router.get("/users", verifyToken,async(req:Request, res:Response)=>{
 
       const limit = Number(req.query.limit) || 10;
 
-      const result = await PaginationService.paginate(situationRepository, page, limit,{id: "DESC"});
+      const result = await PaginationService.paginate(situationRepository, page, limit,{id: "DESC"} , { situation: true } );
 
 
       res.status(200).json(result);
@@ -40,7 +40,11 @@ Router.get("/users/:id", verifyToken,async(req:Request, res:Response)=>{
 
       const userRepository = AppDataSource.getRepository(User);
 
-      const user = await userRepository.findOneBy({id : parseInt(id)})
+      const user = await userRepository.findOne({
+          relations: { situation: true },         
+          where:{id : parseInt(id)}
+      
+      });
 
       if(!User){
           res.status(404).json({

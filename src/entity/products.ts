@@ -13,7 +13,7 @@ export class Product {
     @Column({ length: 255, unique: true })
     slug!: string;
 
-    @Column({ type: "longtext", nullable: true })
+    @Column({ type: "text", nullable: true })
     description!: string | null;
 
     @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })

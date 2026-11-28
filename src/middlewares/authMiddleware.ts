@@ -32,7 +32,7 @@ export function verifyToken(req: AuthRequest, res: Response, next: NextFunction)
     }
     
     // Separar o token do prefixo "Bearer"
-    const [bearer, token] = authHeader.split("")
+    const [bearer, token] = authHeader.split(" ");
 
     // Verificar se o token foi fornecido corretamente
     if(!token || bearer.toLocaleLowerCase() !== "bearer"){
